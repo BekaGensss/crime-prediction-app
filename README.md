@@ -21,6 +21,13 @@ Proyek ini dibangun untuk menganalisis data kriminalitas historis dan memprediks
 
 ---
 
+## 💾 Sumber Data
+
+Data yang digunakan dalam proyek ini diambil dari platform Kaggle.
+* **Tindak Pidana di Indonesia:** [https://www.kaggle.com/datasets/seanangelonathanael/tindak-pidana-di-indonesia](https://www.kaggle.com/datasets/seanangelonathanael/tindak-pidana-di-indonesia)
+
+---
+
 ## 🛠️ Teknologi yang Digunakan
 
 * **Backend:**
@@ -111,4 +118,3 @@ Proyek ini terbuka untuk kontribusi. Jika Anda memiliki saran, perbaikan, atau i
 Proyek ini dirilis di bawah lisensi MIT.
 
 ---
-
