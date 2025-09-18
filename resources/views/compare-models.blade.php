@@ -3,36 +3,21 @@
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-9 col-lg-7">
-            <div class="card-custom">
-                <div class="card-header-custom text-center">
-                    <i class="fas fa-microchip card-icon-header mb-3"></i>
-                    <h2 class="card-title-custom">Perbandingan Model</h2>
-                    <p class="card-subtitle-custom">Membandingkan Akurasi Model Prediksi.</p>
+        <div class="col-md-9">
+            <div class="card-neomorphic">
+                <div class="card-header-neomorphic text-center">
+                    <i class="fas fa-balance-scale header-icon"></i>
+                    <h2 class="card-title-neomorphic mt-3 mb-1">Perbandingan Akurasi Model</h2>
+                    <p class="card-subtitle-neomorphic">Membandingkan performa model klasifikasi kejahatan.</p>
                 </div>
-                <div class="card-body-custom">
+                <div class="card-body-neomorphic">
                     @if (isset($error))
-                        <div class="alert-custom alert-danger-custom text-center mb-4">
+                        <div class="alert alert-danger fade show alert-neumorphic text-center" role="alert">
                             <i class="fas fa-exclamation-triangle me-2"></i> {{ $error }}
                         </div>
                     @else
-                        <p class="text-center text-secondary mb-4">
-                            Diagram di bawah ini menunjukkan akurasi dari dua model prediksi yang berbeda.
-                        </p>
-                        <canvas id="comparisonChart"></canvas>
-                        
-                        <div class="hr-custom my-5"></div>
-                        
-                        <div class="row text-center">
-                            <div class="col-md-6 mb-4">
-                                <h4 class="text-secondary-title mb-2">Akurasi Random Forest</h4>
-                                <h3 class="text-primary-value">{{ $comparisonData['rf_accuracy'] }}%</h3>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <h4 class="text-secondary-title mb-2">Akurasi Decision Tree</h4>
-                                <h3 class="text-primary-value">{{ $comparisonData['dt_accuracy'] }}%</h3>
-                            </div>
-                        </div>
+                        <h4 class="chart-title-neumorphic text-center mb-4">Akurasi Model (%)</h4>
+                        <canvas id="accuracyChart"></canvas>
                     @endif
                 </div>
             </div>
@@ -43,168 +28,173 @@
 <style>
     /* Mengambil variabel dari layout utama */
     :root {
-        --text-primary: #1A1A1A;
-        --text-secondary: #6B7280;
-        --surface-color: #FFFFFF;
-        --border-color: #E5E7EB;
-        --accent-color: #1a1a1a;
-        --accent-hover: #404040;
-        /* Warna Baru untuk Tema Profesional */
-        --theme-primary: #1F2937; /* Dark Blue */
-        --theme-accent: #FFD700;  /* Gold */
+        --bg-color: #F0F4F7;
+        --surface-color: #E0E1DD;
+        --card-color: #F8F9FB;
+        --text-primary: #0D1B2A;
+        --text-secondary: #4A4E69;
+        --theme-primary: #1B263B;
+        --theme-accent: #FFD700;
+        --shadow-light: #FFFFFF;
+        --shadow-dark: #AAB7C4;
     }
 
-    /* Card yang Ditingkatkan */
-    .card-custom {
-        background-color: var(--surface-color);
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: all 0.3s ease-in-out;
-        border: 1px solid var(--border-color);
+    body {
+        font-family: 'Inter', sans-serif;
     }
 
-    .card-custom:hover {
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        transform: translateY(-5px);
+    .card-neomorphic {
+        background-color: var(--card-color);
+        border-radius: 25px;
+        box-shadow: 10px 10px 20px var(--shadow-dark), 
+                    -10px -10px 20px var(--shadow-light);
+        transition: all 0.5s ease-in-out;
     }
-
-    .card-header-custom {
+    .card-neomorphic:hover {
+        box-shadow: 15px 15px 30px var(--shadow-dark), 
+                    -15px -15px 30px var(--shadow-light);
+    }
+    .card-header-neomorphic {
         background-color: var(--theme-primary);
         color: var(--surface-color);
         padding: 40px;
-        border-bottom: 2px solid var(--theme-accent);
-        border-radius: 20px 20px 0 0;
+        border-radius: 25px 25px 0 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
-
-    .card-icon-header {
-        font-size: 3.5rem;
+    .card-header-neomorphic::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    }
+    .header-icon {
+        font-size: 3rem;
         color: var(--theme-accent);
-        animation: pulse 2s infinite ease-in-out;
+        animation: rotateIn 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
-
-    .card-title-custom {
+    .card-title-neomorphic {
+        font-family: 'Playfair Display', serif;
         font-weight: 700;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
+        font-size: 2rem;
         color: var(--surface-color);
+        margin-bottom: 0.2rem;
     }
-
-    .card-subtitle-custom {
+    .card-subtitle-neomorphic {
         font-weight: 400;
-        opacity: 0.8;
+        opacity: 0.9;
         color: var(--surface-color);
+        font-size: 0.9rem;
     }
-
-    .card-body-custom {
+    .card-body-neomorphic {
         padding: 40px;
     }
-    
-    /* Notifikasi Kustom */
-    .alert-custom {
-        border-radius: 12px;
+    .alert-neumorphic {
+        background-color: var(--card-color);
+        border: none;
+        box-shadow: 5px 5px 10px var(--shadow-dark), 
+                    -5px -5px 10px var(--shadow-light);
+        color: var(--text-secondary);
         padding: 1.5rem;
-        font-weight: 500;
     }
-    .alert-danger-custom {
+    .alert-neumorphic.alert-danger {
         background-color: #FEE2E2;
         color: #991B1B;
-        border: 1px solid #FCA5A5;
     }
-
-    /* Garis Pemisah */
-    .hr-custom {
-        height: 1px;
-        background-color: var(--border-color);
-    }
-    
-    /* Teks Nilai Kustom */
-    .text-secondary-title {
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-    .text-primary-value {
-        color: var(--theme-primary);
+    .chart-title-neumorphic {
+        font-family: 'Playfair Display', serif;
         font-weight: 700;
-        font-size: 2.5rem;
+        color: var(--theme-primary);
+        font-size: 1.5rem;
     }
     
-    /* Grafik */
-    .chart-title-custom {
-        font-weight: 600;
-        color: var(--text-primary);
-    }
-
     /* Animasi */
-    @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.7; }
-        100% { transform: scale(1); opacity: 1; }
+    @keyframes fadeInScale {
+        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes rotateIn {
+        from { transform: rotateY(90deg) scale(0.5); opacity: 0; }
+        to { transform: rotateY(0deg) scale(1); opacity: 1; }
     }
 </style>
 
-@if (isset($comparisonData))
 <script>
-    const comparisonData = @json($comparisonData);
-    const ctx = document.getElementById('comparisonChart').getContext('2d');
-    
-    // Konfigurasi umum grafik
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: false
+    @if (isset($comparisonData))
+        const comparisonData = @json($comparisonData);
+        
+        const labels = ['Random Forest', 'Decision Tree', 'Logistic Regression', 'SVM'];
+        const data = [
+            comparisonData.rf_accuracy,
+            comparisonData.dt_accuracy,
+            comparisonData.lr_accuracy,
+            comparisonData.svm_accuracy
+        ];
+
+        const ctx = document.getElementById('accuracyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Akurasi (%)',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(27, 38, 59, 0.8)',
+                        'rgba(255, 215, 0, 0.8)',
+                        'rgba(0, 123, 255, 0.8)',
+                        'rgba(220, 53, 69, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(27, 38, 59, 1)',
+                        'rgba(255, 215, 0, 1)',
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(220, 53, 69, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
             },
-            tooltip: {
-                backgroundColor: 'rgba(31, 41, 55, 0.9)',
-                titleColor: '#FFD700',
-                bodyColor: '#FFFFFF',
-                callbacks: {
-                    label: function(context) {
-                        return context.dataset.label + ': ' + context.raw + '%';
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(229, 231, 235, 0.5)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(13, 27, 42, 0.9)',
+                        titleColor: 'var(--theme-accent)',
+                        bodyColor: 'var(--surface-color)',
+                        bodyFont: {
+                            family: 'Inter'
+                        },
+                        titleFont: {
+                            family: 'Inter'
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw + '%';
+                            }
+                        }
                     }
                 }
             }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                grid: { color: '#E5E7EB' },
-                ticks: {
-                    color: '#6B7280',
-                }
-            },
-            x: {
-                grid: { display: false },
-                ticks: {
-                    color: '#6B7280',
-                }
-            }
-        }
-    };
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Random Forest', 'Decision Tree'],
-            datasets: [{
-                label: 'Akurasi',
-                data: [comparisonData.rf_accuracy, comparisonData.dt_accuracy],
-                backgroundColor: [
-                    'rgba(31, 41, 55, 0.8)', // Dark Blue
-                    'rgba(255, 215, 0, 0.8)' // Gold
-                ],
-                borderColor: [
-                    'rgba(31, 41, 55, 1)',
-                    'rgba(255, 215, 0, 1)'
-                ],
-                borderWidth: 1,
-                borderRadius: 5
-            }]
-        },
-        options: chartOptions
-    });
+        });
+    @endif
 </script>
-@endif
 @endsection

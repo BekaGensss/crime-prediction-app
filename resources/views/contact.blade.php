@@ -4,29 +4,33 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-9 col-lg-7">
-            <div class="card-custom">
-                <div class="card-header-custom text-center">
-                    <i class="fas fa-envelope card-icon-header mb-3"></i>
-                    <h2 class="card-title-custom">Hubungi Kami</h2>
-                    <p class="card-subtitle-custom">Kami siap mendengar pertanyaan, masukan, atau ajakan kolaborasi Anda.</p>
+            <div class="card-neomorphic">
+                <div class="card-header-neomorphic text-center">
+                    <i class="fas fa-envelope header-icon"></i>
+                    <h2 class="card-title-neomorphic mt-3 mb-1">Hubungi Kami</h2>
+                    <p class="card-subtitle-neomorphic">Kami siap mendengar pertanyaan, masukan, atau ajakan kolaborasi Anda.</p>
                 </div>
-                <div class="card-body-custom text-center">
-                    <p class="text-secondary mb-4">
+                <div class="card-body-neomorphic text-center">
+                    <p class="text-secondary mb-4 lead">
                         Jika Anda memiliki pertanyaan, masukan, atau ingin berkolaborasi, silakan hubungi kami melalui informasi di bawah ini.
                     </p>
-                    <ul class="list-unstyled contact-list">
+                    <ul class="list-unstyled contact-list-neumorphic">
                         <li>
-                            <i class="fas fa-at icon-contact"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Email:</span>
-                                <a href="mailto:contoh.email@example.com" class="contact-link">contoh.email@example.com</a>
+                            <div class="contact-block-neumorphic">
+                                <i class="fas fa-at icon-contact"></i>
+                                <div class="contact-details">
+                                    <span class="contact-label">Email:</span>
+                                    <a href="mailto:contoh.email@example.com" class="contact-link">contoh.email@example.com</a>
+                                </div>
                             </div>
                         </li>
                         <li>
-                            <i class="fas fa-phone-alt icon-contact"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Telepon:</span>
-                                <a href="tel:+6281234567890" class="contact-link">+62 812-3456-7890</a>
+                            <div class="contact-block-neumorphic">
+                                <i class="fas fa-phone-alt icon-contact"></i>
+                                <div class="contact-details">
+                                    <span class="contact-label">Telepon:</span>
+                                    <a href="tel:+6281234567890" class="contact-link">+62 812-3456-7890</a>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -42,114 +46,128 @@
 <style>
     /* Mengambil variabel dari layout utama */
     :root {
-        --text-primary: #1A1A1A;
-        --text-secondary: #6B7280;
-        --surface-color: #FFFFFF;
-        --border-color: #E5E7EB;
-        --accent-color: #1a1a1a;
-        --accent-hover: #404040;
-        /* Warna Baru untuk Tema Profesional */
-        --theme-primary: #1F2937; /* Dark Blue */
-        --theme-accent: #FFD700;  /* Gold */
+        --bg-color: #F0F4F7;
+        --surface-color: #E0E1DD;
+        --card-color: #F8F9FB;
+        --text-primary: #0D1B2A;
+        --text-secondary: #4A4E69;
+        --theme-primary: #1B263B;
+        --theme-accent: #FFD700;
+        --shadow-light: #FFFFFF;
+        --shadow-dark: #AAB7C4;
     }
 
-    /* Card yang Ditingkatkan */
-    .card-custom {
-        background-color: var(--surface-color);
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        transition: all 0.3s ease-in-out;
-        border: 1px solid var(--border-color);
+    body {
+        font-family: 'Inter', sans-serif;
     }
 
-    .card-custom:hover {
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        transform: translateY(-5px);
+    /* Card Neumorphism */
+    .card-neomorphic {
+        background-color: var(--card-color);
+        border-radius: 25px;
+        box-shadow: 10px 10px 20px var(--shadow-dark), 
+                    -10px -10px 20px var(--shadow-light);
+        transition: all 0.5s ease-in-out;
     }
-
-    .card-header-custom {
+    .card-neomorphic:hover {
+        box-shadow: 15px 15px 30px var(--shadow-dark), 
+                    -15px -15px 30px var(--shadow-light);
+    }
+    .card-header-neomorphic {
         background-color: var(--theme-primary);
         color: var(--surface-color);
         padding: 40px;
-        border-bottom: 2px solid var(--theme-accent);
-        border-radius: 20px 20px 0 0;
+        border-radius: 25px 25px 0 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
-
-    .card-icon-header {
-        font-size: 3.5rem;
+    .card-header-neomorphic::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    }
+    .header-icon {
+        font-size: 3rem;
         color: var(--theme-accent);
-        animation: pulse 2s infinite ease-in-out;
+        animation: rotateIn 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
-
-    .card-title-custom {
+    .card-title-neomorphic {
+        font-family: 'Playfair Display', serif;
         font-weight: 700;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
+        font-size: 2rem;
         color: var(--surface-color);
+        margin-bottom: 0.2rem;
     }
-
-    .card-subtitle-custom {
+    .card-subtitle-neomorphic {
         font-weight: 400;
-        opacity: 0.8;
+        opacity: 0.9;
         color: var(--surface-color);
+        font-size: 0.9rem;
     }
-
-    .card-body-custom {
+    .card-body-neomorphic {
         padding: 40px;
     }
 
-    /* Kontak Kustom */
-    .contact-list {
+    /* Kontak Kustom Neumorphism */
+    .contact-list-neumorphic {
         list-style: none;
         padding: 0;
         margin-top: 2rem;
     }
-
-    .contact-list li {
+    .contact-block-neumorphic {
+        background-color: var(--card-color);
+        border-radius: 15px;
+        box-shadow: 5px 5px 10px var(--shadow-dark), 
+                    -5px -5px 10px var(--shadow-light);
+        padding: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1.5rem;
-        transition: transform 0.3s ease;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
     }
-
-    .contact-list li:hover {
-        transform: translateY(-3px);
+    .contact-block-neumorphic:hover {
+        transform: translateY(-5px);
+        box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.08);
     }
-
     .icon-contact {
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: var(--theme-primary);
-        margin-right: 1rem;
+        margin-right: 1.5rem;
     }
-
     .contact-details {
         text-align: left;
     }
-
     .contact-label {
         font-weight: 600;
         color: var(--text-primary);
         display: block;
+        font-size: 1.1rem;
     }
-
     .contact-link {
         color: var(--text-secondary);
         text-decoration: none;
         transition: color 0.3s ease;
     }
-
     .contact-link:hover {
         color: var(--theme-primary);
         text-decoration: underline;
     }
 
     /* Animasi */
-    @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.7; }
-        100% { transform: scale(1); opacity: 1; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes rotateIn {
+        from { transform: rotateY(90deg) scale(0.5); opacity: 0; }
+        to { transform: rotateY(0deg) scale(1); opacity: 1; }
     }
 </style>
 @endsection

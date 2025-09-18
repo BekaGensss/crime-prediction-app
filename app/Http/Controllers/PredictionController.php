@@ -33,10 +33,29 @@ class PredictionController extends Controller
                 ]
             ]);
             $data = json_decode($response->getBody(), true);
-            if (isset($data['error'])) {
-                return response()->json(['error' => $data['error']], 400);
+            
+            if (!isset($data['prediksi']) || !isset($data['probabilitas'])) {
+                return response()->json(['error' => 'Data dari server prediksi tidak lengkap.'], 500);
             }
-            return response()->json(['prediction' => $data['prediksi']]);
+
+            // PERBAIKAN: Menggunakan array map untuk mendapatkan nama model yang benar
+            $model_name_map = [
+                'rf' => 'Random Forest Classifier',
+                'dt' => 'Decision Tree Classifier',
+                'lr' => 'Logistic Regression',
+                'svm' => 'Support Vector Machine (SVM)'
+            ];
+
+            $model_key = $request->input('model');
+            $model_name = $model_name_map[$model_key] ?? 'Unknown Model'; // Fallback jika model tidak ditemukan
+
+            return response()->json([
+                'prediction' => $data['prediksi'],
+                'model_name' => $model_name,
+                'location' => $request->input('location'),
+                'probabilities' => $data['probabilitas']
+            ]);
+
         } catch (RequestException $e) {
             $response = $e->getResponse();
             if ($response) {
@@ -130,32 +149,22 @@ class PredictionController extends Controller
         $chartData = [];
         $comparisonData = [];
 
-        // Logika untuk Mode Perbandingan
         if ($compare1 !== 'all' && $compare2 !== 'all') {
-            $labels = [$compare1, $compare2];
+            $labels = ['2021', '2022'];
             
             $loc1Data = collect($data)->firstWhere('Kepolisian_Daerah', $compare1);
             $loc2Data = collect($data)->firstWhere('Kepolisian_Daerah', $compare2);
             
             if ($loc1Data && $loc2Data) {
-                $comparisonData = [
-                    [
-                        'location' => $loc1Data['Kepolisian_Daerah'],
-                        '2021' => (int) $loc1Data['Jumlah_Tindak_Pidana_2021'],
-                        '2022' => (int) $loc1Data['Jumlah_Tindak_Pidana_2022']
-                    ],
-                    [
-                        'location' => $loc2Data['Kepolisian_Daerah'],
-                        '2021' => (int) $loc2Data['Jumlah_Tindak_Pidana_2021'],
-                        '2022' => (int) $loc2Data['Jumlah_Tindak_Pidana_2022']
-                    ]
+                $chartData = [
+                    (object) ['location' => $loc1Data['Kepolisian_Daerah'], '2021' => (int)$loc1Data['Jumlah_Tindak_Pidana_2021'], '2022' => (int)$loc1Data['Jumlah_Tindak_Pidana_2022']],
+                    (object) ['location' => $loc2Data['Kepolisian_Daerah'], '2021' => (int)$loc2Data['Jumlah_Tindak_Pidana_2021'], '2022' => (int)$loc2Data['Jumlah_Tindak_Pidana_2022']]
                 ];
             } else {
                 return view('statistics')->with('error', 'Salah satu lokasi tidak ditemukan.');
             }
 
         } else {
-            // Logika untuk Mode Filter
             $dataTotal = array_map(function($row) {
                 return (int)$row['Jumlah_Tindak_Pidana_2021'] + (int)$row['Jumlah_Tindak_Pidana_2022'];
             }, $data);

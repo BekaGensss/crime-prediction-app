@@ -4,11 +4,13 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import joblib
 from flask import Flask, request, jsonify
 import os
+import numpy as np
 
 app = Flask(__name__)
 
@@ -32,8 +34,8 @@ def load_and_prepare_data(file_path):
 
     df['total_jumlah'] = df['jumlah_2021'] + df['jumlah_2022']
     
-    bins = [df['total_jumlah'].min() - 1, df['total_jumlah'].quantile(0.33), df['total_jumlah'].quantile(0.66), df['total_jumlah'].max()]
-    labels = ['Low', 'Medium', 'High']
+    bins = [df['total_jumlah'].min() - 1, df['total_jumlah'].quantile(0.5), df['total_jumlah'].max()]
+    labels = ['Rendah', 'Tinggi']
     df['tingkat_resiko'] = pd.cut(df['total_jumlah'], bins=bins, labels=labels)
     
     df = pd.get_dummies(df, columns=['lokasi'])
@@ -50,23 +52,33 @@ def train_and_save_models(df):
     
     X_train, X_test, y_train_clf, y_test_clf = train_test_split(X, y_clf, test_size=0.2, random_state=42)
     
-    # Inisialisasi dan latih RandomForestClassifier
+    # Random Forest Classifier
     rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
     rf_model.fit(X_train, y_train_clf)
     joblib.dump(rf_model, 'rf_model.pkl')
-    
-    # Hitung dan simpan akurasi Random Forest
     rf_accuracy = accuracy_score(y_test_clf, rf_model.predict(X_test))
     joblib.dump(rf_accuracy, 'rf_accuracy.pkl')
     
-    # Inisialisasi dan latih DecisionTreeClassifier
-    dt_model = DecisionTreeClassifier(random_state=42)
+    # Decision Tree Classifier
+    dt_model = DecisionTreeClassifier(max_depth=3, random_state=42)
     dt_model.fit(X_train, y_train_clf)
     joblib.dump(dt_model, 'dt_model.pkl')
-    
-    # Hitung dan simpan akurasi Decision Tree
     dt_accuracy = accuracy_score(y_test_clf, dt_model.predict(X_test))
     joblib.dump(dt_accuracy, 'dt_accuracy.pkl')
+
+    # Logistic Regression
+    lr_model = LogisticRegression(random_state=42)
+    lr_model.fit(X_train, y_train_clf)
+    joblib.dump(lr_model, 'lr_model.pkl')
+    lr_accuracy = accuracy_score(y_test_clf, lr_model.predict(X_test))
+    joblib.dump(lr_accuracy, 'lr_accuracy.pkl')
+
+    # Support Vector Machine (SVM)
+    svm_model = SVC(probability=True, random_state=42)
+    svm_model.fit(X_train, y_train_clf)
+    joblib.dump(svm_model, 'svm_model.pkl')
+    svm_accuracy = accuracy_score(y_test_clf, svm_model.predict(X_test))
+    joblib.dump(svm_accuracy, 'svm_accuracy.pkl')
     
     print("Models trained and saved successfully.")
     
@@ -89,6 +101,10 @@ def predict():
 
         if model_name == 'dt':
             model = joblib.load('dt_model.pkl')
+        elif model_name == 'lr':
+            model = joblib.load('lr_model.pkl')
+        elif model_name == 'svm':
+            model = joblib.load('svm_model.pkl')
         else:
             model = joblib.load('rf_model.pkl')
         
@@ -102,8 +118,12 @@ def predict():
             return jsonify({'error': 'Lokasi tidak ditemukan dalam data pelatihan.'}), 400
         
         prediction = model.predict(input_df)
+        probabilities = model.predict_proba(input_df)[0].tolist()
         
-        return jsonify({'prediksi': prediction[0]})
+        return jsonify({
+            'prediksi': prediction[0],
+            'probabilitas': probabilities
+        })
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -139,13 +159,16 @@ def forecast():
         reg_model = LinearRegression()
         reg_model.fit(X, y)
         
-        forecast_2023 = reg_model.predict([[2023]])[0]
-        
+        # PERBAIKAN: Memprediksi untuk tahun 2023, 2024, 2025, dan 2026
+        forecast_years = [2023, 2024, 2025, 2026]
+        forecasts = [int(reg_model.predict([[year]])[0]) for year in forecast_years]
+
         return jsonify({
             'lokasi': lokasi,
             'data_2021': int(jumlah_2021),
             'data_2022': int(jumlah_2022),
-            'forecast_2023': int(forecast_2023)
+            'forecasts': forecasts, # Mengirimkan daftar peramalan
+            'forecast_years': forecast_years # Mengirimkan daftar tahun peramalan
         })
         
     except Exception as e:
@@ -155,13 +178,16 @@ def forecast():
 @app.route('/compare-models')
 def compare_models():
     try:
-        # Muat akurasi yang sudah disimpan
         rf_accuracy = joblib.load('rf_accuracy.pkl')
         dt_accuracy = joblib.load('dt_accuracy.pkl')
+        lr_accuracy = joblib.load('lr_accuracy.pkl')
+        svm_accuracy = joblib.load('svm_accuracy.pkl')
         
         return jsonify({
             'rf_accuracy': round(rf_accuracy * 100, 2),
-            'dt_accuracy': round(dt_accuracy * 100, 2)
+            'dt_accuracy': round(dt_accuracy * 100, 2),
+            'lr_accuracy': round(lr_accuracy * 100, 2),
+            'svm_accuracy': round(svm_accuracy * 100, 2)
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
