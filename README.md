@@ -47,6 +47,12 @@ Data yang digunakan dalam proyek ini diambil dari platform Kaggle.
     * **numpy**
 
 ---
+* **Fitur Fitur**
+* **Prediksi Multimodel: Menggunakan beberapa model klasifikasi, seperti Random Forest, Decision Tree, Logistic Regression, dan Support Vector Machine (SVM) untuk memprediksi tingkat    risiko kejahatan**
+* **Peramalan Jangka Panjang: Memperkirakan tren jumlah kasus kejahatan hingga tahun 2026 menggunakan Linear Regression**
+* **Visualisasi Interaktif: Menampilkan data statistik dan hasil perbandingan dalam bentuk grafik yang mudah dipahami**
+* **Desain Modern: Antarmuka pengguna dirancang dengan gaya Neumorphism yang elegan dan responsif, memastikan pengalaman pengguna yang optimal**
+---
 
 ## ⚙️ Instalasi dan Konfigurasi
 
